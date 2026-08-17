@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/omnidbm-banner.svg" alt="omnidbm — universal database-to-database transfer engine" width="100%">
+  <img src="https://raw.githubusercontent.com/Notookk/Omnidbm/master/assets/omnidbm-banner.svg" alt="omnidbm — universal database-to-database transfer engine" width="100%">
 </p>
 
 <p align="center">
