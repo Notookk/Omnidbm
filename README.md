@@ -3,6 +3,7 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/Notookk/Omnidbm/actions"><img src="https://img.shields.io/github/actions/workflow/status/Notookk/Omnidbm/ci.yml?branch=master&style=flat&color=34d399" alt="CI"></a>
   <a href="https://pypi.org/project/omnidbm/"><img src="https://img.shields.io/pypi/v/omnidbm?style=flat&color=8b5cf6" alt="PyPI version"></a>
   <a href="https://pypi.org/project/omnidbm/"><img src="https://img.shields.io/pypi/pyversions/omnidbm?style=flat&color=22d3ee" alt="Python versions"></a>
   <a href="https://pypi.org/project/omnidbm/"><img src="https://img.shields.io/pypi/l/omnidbm?style=flat&color=10b981" alt="License"></a>
