@@ -128,7 +128,7 @@ Every document is normalized to JSON-safe values on the wire, tagged so nothing 
 ## Development
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/Notookk/Omnidbm
 pip install -e ".[dev]"
 
 pytest          # run the test suite
