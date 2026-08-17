@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "omnidbm"
-version = "0.1.0"
+version = "0.1.1"
 description = "Universal database-to-database transfer engine with an interactive CLI (MongoDB, PostgreSQL, MySQL, SQLite, Redis, CSV, JSONL)"
 readme = "README.md"
 requires-python = ">=3.10"

@@ -109,9 +109,9 @@ Subclass `BaseConnector`, implement `connect`, `list_tables`, `read_stream`, `wr
 ```python
 from omnidbm.core.connector import BaseConnector, register
 
+
 @register("myproto")
-class MyConnector(BaseConnector):
-    ...
+class MyConnector(BaseConnector): ...
 ```
 
 ## How the type bus works

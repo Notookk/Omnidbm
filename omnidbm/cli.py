@@ -71,7 +71,12 @@ def _summary_table(results) -> None:
 
 @app.command()
 def transfer(
-    source: str = typer.Option(..., "--source", "-s", help="Source URI (mongodb://, postgresql://, csv://, jsonl://)"),
+    source: str = typer.Option(
+        ...,
+        "--source",
+        "-s",
+        help="Source URI (mongodb://, postgresql://, mysql://, sqlite://, redis://, csv://, jsonl://)",
+    ),
     dest: str = typer.Option(..., "--dest", "-d", help="Destination URI"),
     tables: str | None = typer.Option(None, "--tables", "-t", help="Comma-separated table names (default: all)"),
     batch_size: int = typer.Option(1000, "--batch-size", min=1, help="Documents per batch"),
