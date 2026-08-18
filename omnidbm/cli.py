@@ -190,8 +190,8 @@ def doctor(
     table = Table(title="Connectivity check", show_lines=True)
     table.add_column("URI", style="cyan")
     table.add_column("Status")
-    for uri, ok in doctor_check([ConnectorConfig(uri=u) for u in uris]).items():
-        table.add_row(uri, "[green]OK[/]" if ok else "[red]FAILED[/]")
+    for uri, msg in doctor_check([ConnectorConfig(uri=u) for u in uris]).items():
+        table.add_row(uri, "[green]OK[/]" if msg == "OK" else f"[red]FAILED[/] — {msg}")
     console.print(table)
 
 

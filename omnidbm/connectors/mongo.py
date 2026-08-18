@@ -24,11 +24,14 @@ class MongoConnector(BaseConnector):
         except Exception as exc:
             raise ConnectionError(f"MongoDB connection failed: {exc}") from exc
         database = self.config.database or parse_uri(self.config.uri).get("database")
-        if not database:
-            raise ConnectionError("MongoDB URI must include a database name")
-        self.db = self.client[database]
+        self.db = self.client[database] if database else None
+
+    def _require_db(self) -> None:
+        if self.db is None:
+            raise ConnectionError("MongoDB URI must include a database name (e.g. mongodb+srv://host/dbname)")
 
     def list_tables(self) -> list[TableInfo]:
+        self._require_db()
         return [
             TableInfo(name=name, count=self.db[name].estimated_document_count())
             for name in self.db.list_collection_names()
@@ -41,6 +44,7 @@ class MongoConnector(BaseConnector):
         limit: int | None = None,
         query: dict[str, Any] | None = None,
     ) -> Iterator[list[dict[str, Any]]]:
+        self._require_db()
         cursor = self.db[table].find(query or {}).batch_size(5000)
         if limit is not None:
             cursor = cursor.limit(limit)
@@ -61,6 +65,7 @@ class MongoConnector(BaseConnector):
         conflict: ConflictStrategy = ConflictStrategy.SKIP,
         on_progress: Callable[[int], None] | None = None,
     ) -> int:
+        self._require_db()
         collection = self.db[table]
         if drop_first:
             collection.drop()

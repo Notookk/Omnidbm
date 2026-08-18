@@ -57,13 +57,13 @@ def inspect(config: ConnectorConfig) -> list[TableInfo]:
         return connector.list_tables()
 
 
-def doctor(configs: list[ConnectorConfig]) -> dict[str, bool]:
-    status: dict[str, bool] = {}
+def doctor(configs: list[ConnectorConfig]) -> dict[str, str]:
+    status: dict[str, str] = {}
     for config in configs:
         try:
             with connect(config) as connector:
                 connector.check()
-            status[config.uri] = True
-        except Exception:  # noqa: BLE001
-            status[config.uri] = False
+            status[config.uri] = "OK"
+        except Exception as exc:  # noqa: BLE001
+            status[config.uri] = str(exc)
     return status
