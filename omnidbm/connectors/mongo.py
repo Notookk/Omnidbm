@@ -31,7 +31,17 @@ class MongoConnector(BaseConnector):
             raise ConnectionError("MongoDB URI must include a database name (e.g. mongodb+srv://host/dbname)")
 
     def list_tables(self) -> list[TableInfo]:
-        self._require_db()
+        if self.db is None:
+            infos: list[TableInfo] = []
+            for db_name in self.client.list_database_names():
+                if db_name in ("admin", "local", "config"):
+                    continue
+                try:
+                    count = len(self.client[db_name].list_collection_names())
+                except Exception:  # noqa: BLE001
+                    count = 0
+                infos.append(TableInfo(name=db_name, count=count))
+            return infos
         return [
             TableInfo(name=name, count=self.db[name].estimated_document_count())
             for name in self.db.list_collection_names()

@@ -9,7 +9,7 @@ from omnidbm.core.models import (
 )
 from omnidbm.core.pipeline import connect, doctor, inspect, run_transfer
 
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 
 __all__ = [
     "OmniDBMError",
