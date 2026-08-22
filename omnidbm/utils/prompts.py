@@ -48,6 +48,15 @@ def _parse_tables(answer: str, names: list[str]) -> list[str]:
     return selected
 
 
+def _mongo_db(uri: str) -> str | None:
+    try:
+        from pymongo.uri_parser import parse_uri
+
+        return parse_uri(uri).get("database") or None
+    except Exception:  # noqa: BLE001
+        return None
+
+
 def run_wizard() -> TransferConfig | None:
     console.print(
         Panel.fit(
@@ -64,6 +73,43 @@ def run_wizard() -> TransferConfig | None:
         source=ConnectorConfig(uri=source_uri),
         dest=ConnectorConfig(uri=dest_uri),
     )
+
+    if source_type == "mongo" and not _mongo_db(source_uri):
+        with connect(config.source) as src:
+            dbs = src.list_tables()
+            if not dbs:
+                console.print("[red]No databases found in source.[/]")
+                return None
+            console.print("\n[bold cyan]Available databases:[/]")
+            for index, db in enumerate(dbs, start=1):
+                console.print(f"  [bold]{index}[/] {db.name} ({db.count} collections)")
+            answer = Prompt.ask("Database to use", default=dbs[0].name)
+            picked = _parse_tables(answer, [db.name for db in dbs])
+            db_name = picked[0] if picked else answer.strip()
+            if not db_name:
+                console.print("[red]No database selected.[/]")
+                return None
+            config.source.database = db_name
+
+    if dest_type == "mongo" and not _mongo_db(dest_uri):
+        default_db = config.source.database or _mongo_db(source_uri) or ""
+        try:
+            with connect(config.dest) as dst:
+                dest_dbs = dst.list_tables()
+        except Exception:  # noqa: BLE001
+            dest_dbs = []
+        if dest_dbs:
+            console.print("\n[bold cyan]Available databases on destination:[/]")
+            for index, db in enumerate(dest_dbs, start=1):
+                console.print(f"  [bold]{index}[/] {db.name} ({db.count} collections)")
+        fallback = default_db or (dest_dbs[0].name if dest_dbs else "")
+        answer = Prompt.ask("Destination database", default=fallback)
+        picked = _parse_tables(answer, [db.name for db in dest_dbs]) if dest_dbs else []
+        db_name = picked[0] if picked else answer.strip()
+        if not db_name:
+            console.print("[red]No database selected.[/]")
+            return None
+        config.dest.database = db_name
 
     with connect(config.source) as src:
         tables = src.list_tables()
